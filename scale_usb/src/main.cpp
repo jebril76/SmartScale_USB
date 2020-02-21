@@ -5,6 +5,7 @@
 #include <HX711.h>                  // Loadcell
 #include <U8x8lib.h>                // ssd1306 Display
 
+#define VERBOSE false
 //Hardware
 #define LED 2
 //Pin Settings
@@ -210,7 +211,9 @@ void parseData() {      // split the data into its parts
     if (command == "tara"){
       scale.tare(10);
       offset = scale.get_offset();
-      Serial.println("Tara");
+      if (VERBOSE){
+        Serial.println("Tara");
+      }
     }
     else if(command == "cali") {
       strtokIndx = strtok(NULL, ";");
@@ -219,47 +222,64 @@ void parseData() {      // split the data into its parts
       tempfloat = scale.get_units(10);
       scale.set_scale(tempfloat/reference);
       factor = scale.get_scale();
-      Serial.printf("Reference weight set to %.2f\n", reference);
+
+      if (VERBOSE){
+        Serial.printf("Reference weight set to %.2f\n", reference);
+      }
     }
     else if(command == "coil") {
       strtokIndx = strtok(NULL, ";");
       coil = atof(strtokIndx);     // convert this part to a float
-      Serial.printf("Coilweight set to %.2f\n", tara);
+      if (VERBOSE){
+        Serial.printf("Coilweight set to %.2f\n", tara);
+      }
     }
     else if(command == "spow") {
       strtokIndx = strtok(NULL, ";");
       spoolweight = atof(strtokIndx);     // convert this part to a float
-      Serial.printf("Spoolweight set to %.2f\n", spoolweight);
+      if (VERBOSE){
+        Serial.printf("Spoolweight set to %.2f\n", spoolweight);
+      }
     }
     else if(command == "dens") {
       strtokIndx = strtok(NULL, ";");
       density = atof(strtokIndx);     // convert this part to a float
-      Serial.printf("Density set to %.2f\n", density);
+      if (VERBOSE){
+        Serial.printf("Density set to %.2f\n", density);
+      }
     }
     else if(command == "cont") {
       strtokIndx = strtok(NULL, ";");
       containersize = atof(strtokIndx);     // convert this part to a float
-      Serial.printf("Containersize set to %.2f\n", containersize);
+      if (VERBOSE){
+        Serial.printf("Containersize set to %.2f\n", containersize);
+      }
     } 
     else if(command == "alti") {
       strtokIndx = strtok(NULL, ";");
       altitude = atof(strtokIndx);     // convert this part to a float
-      Serial.printf("Altitude set to %.2f\n", altitude);
+      if (VERBOSE){
+        Serial.printf("Altitude set to %.2f\n", altitude);
+      }
     }
     else if(command == "heat") {
       strtokIndx = strtok(NULL, ";");
       heatertemp = atof(strtokIndx);     // convert this part to a float
-      Serial.printf("Heatertemp set to %.2f\n", heatertemp);
+      if (VERBOSE){
+        Serial.printf("Heatertemp set to %.2f\n", heatertemp);
+      }
     } 
     else if(command == "dele") {
-      Serial.printf("Restore Factorysettings");
+      if (VERBOSE){
+        Serial.printf("Restore Factorysettings");
+      }
       strtokIndx = strtok(NULL, ";");    //delete all configfiles
       File configFile = SPIFFS.open("/config.txt", "w");
       configFile.close();
       ESP.restart();
     } 
-    else {
-        Serial.println("Unknown Command. Please Check Manual");
+    else if (VERBOSE){
+      Serial.println("Unknown Command. Please Check Manual");
     }
     saveConfig();
 }
