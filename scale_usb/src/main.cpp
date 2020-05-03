@@ -91,6 +91,9 @@ void handleupdateDisplay() {
 // Lineare Regression
   if (scale.is_ready()) {
     newweight = scale.get_units(1);
+    if (newweight == 0) {
+      newweight = scale.get_units(1);
+    }
   }
   if (weight < newweight - 10 || weight > newweight + 10) {
       weight = weight*0.2 + newweight*0.8;  
@@ -212,7 +215,7 @@ void parseData() {      // split the data into its parts
       scale.tare(10);
       offset = scale.get_offset();
       if (VERBOSE){
-        Serial.println("Tara");
+        Serial.printf("Tara\n");
       }
     }
     else if(command == "cali") {
@@ -279,7 +282,7 @@ void parseData() {      // split the data into its parts
       ESP.restart();
     } 
     else if (VERBOSE){
-      Serial.println("Unknown Command. Please Check Manual");
+      Serial.printf("Unknown Command. Please Check Manual\n");
     }
     saveConfig();
 }
