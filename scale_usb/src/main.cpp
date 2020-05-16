@@ -21,7 +21,7 @@
 const byte numChars = 32;
 char receivedChars[numChars];
 char tempChars[numChars];
-boolean newData = false;
+bool newData = false;
 	
 // Scale, ME Sensor and SSD1306 Display
 U8X8_SSD1306_128X64_NONAME_SW_I2C display(I2C_SCL, I2C_SDA, U8X8_PIN_NONE); 
@@ -91,9 +91,6 @@ void handleupdateDisplay() {
 // Lineare Regression
   if (scale.is_ready()) {
     newweight = scale.get_units(1);
-    if (newweight == 0) {
-      newweight = scale.get_units(1);
-    }
   }
   if (weight < newweight - 10 || weight > newweight + 10) {
       weight = weight*0.2 + newweight*0.8;  
@@ -212,7 +209,7 @@ void parseData() {      // split the data into its parts
     char * strtokIndx; // this is used by strtok() as an index
     String command = strtok(tempChars,":");      // get the first part - the string
     if (command == "tara"){
-      scale.tare(10);
+      scale.tare(4);
       offset = scale.get_offset();
       if (VERBOSE){
         Serial.printf("Tara\n");
@@ -222,7 +219,7 @@ void parseData() {      // split the data into its parts
       strtokIndx = strtok(NULL, ";");
       reference = atof(strtokIndx);     // convert this part to a float
       scale.set_scale();
-      tempfloat = scale.get_units(10);
+      tempfloat = scale.get_units(4);
       scale.set_scale(tempfloat/reference);
       factor = scale.get_scale();
 
